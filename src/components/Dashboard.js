@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Stack, Typography, Card, CardActions, CardContent, Switch, Slider, MenuItem, FormControl, Select } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import { pink } from '@mui/material/colors';
@@ -21,6 +21,19 @@ function valuetext(value) {
 
 function Dashboard() {
   const [quality, setQuality] = useState('');
+  const [direction, setDirection] = useState('');
+
+  const handleDirection = () => {
+    setDirection(window.innerWidth > 1000 ? "row" : "column");
+  };
+
+  useEffect(() => {
+    handleDirection();
+    window.addEventListener('resize', handleDirection);
+    return () => {
+      window.removeEventListener('resize', handleDirection);
+    };
+  }, []);
 
   const handleChange = (e) => {
     setQuality(e.target.value);
@@ -33,7 +46,7 @@ function Dashboard() {
         Welcome User!
       </Typography>
       </div>
-      <Stack sx={{ marginBottom: 5 }} direction="row" spacing={8}>
+      <Stack sx={{ marginBottom: 5 }} direction={direction} spacing={8}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent sx={{ width: '210px' }}>
             <Typography sx={{ fontWeight: 'bold' }} color="inherit" gutterBottom>
