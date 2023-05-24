@@ -15,18 +15,43 @@ const PinkSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-function valuetext(value) {
-  return `${value}°C`;
-}
-
 function Dashboard() {
-  const [quality, setQuality] = useState('');
+  const [online, setOnline] = useState(false);
+  const [volume, setVolume] = useState(30);
+  const [quality, setQuality] = useState(2);
+  const [notifications, setNotifications] = useState([]);
   const [direction, setDirection] = useState('');
+  
+  const handleSwitch = () => {
+    setOnline(prevOnline => !prevOnline);
+  };
 
+  const handleVolume = ({ target }) => {
+    setVolume(target.value)
+  };
+  
+  const handleQuality = ({ target }) => {
+    setQuality(target.value);
+  };
+  ///INCOMPLETE
+  useEffect(() => {
+    setNotifications(prevNotifs => {
+      if (!online) {
+        return [...prevNotifs, "Your application is offline. You won't be able to share or stream music to other devices."]
+      }
+    })
+  }, [online]);
+  ///
+  useEffect(() => {
+    console.log(online);
+    console.log(volume);
+    console.log(quality);
+  }, [online, volume, quality]);
+  
   const handleDirection = () => {
     setDirection(window.innerWidth > 1000 ? "row" : "column");
   };
-
+  
   useEffect(() => {
     handleDirection();
     window.addEventListener('resize', handleDirection);
@@ -34,10 +59,6 @@ function Dashboard() {
       window.removeEventListener('resize', handleDirection);
     };
   }, []);
-
-  const handleChange = (e) => {
-    setQuality(e.target.value);
-  };
 
   return (
     <div>
@@ -57,7 +78,7 @@ function Dashboard() {
             </Typography>
           </CardContent>
           <CardActions>
-            <PinkSwitch />
+            <PinkSwitch onClick={handleSwitch} />
           </CardActions>
         </Card>
         <Card sx={{ minWidth: 275 }}>
@@ -71,9 +92,9 @@ function Dashboard() {
           </CardContent>
           <CardActions>
           <Slider
-            size="small"
+            onChange={handleVolume}
             defaultValue={30}
-            getAriaValueText={valuetext}
+            size="small"
             step={10}
             marks
             min={0}
@@ -93,7 +114,7 @@ function Dashboard() {
           </CardContent>
           <CardActions>
             <FormControl variant="standard" fullWidth>
-              <Select value={quality} onChange={handleChange}>
+              <Select value={quality} onChange={handleQuality}>
                 <MenuItem value={1}>Low</MenuItem>
                 <MenuItem value={2}>Normal</MenuItem>
                 <MenuItem value={3}>High</MenuItem>
@@ -107,6 +128,16 @@ function Dashboard() {
         System Notifications:
       </Typography>
       </div>
+      <Stack>
+        {notifications.length ? 
+          notifications.map((notif, idx) => {
+            return (
+              <Typography key={idx} variant="paragraph" gutterBottom>{notif}</Typography>
+            )
+          }) : 
+          <></>
+        }
+      </Stack>
     </div>
   );
 }
