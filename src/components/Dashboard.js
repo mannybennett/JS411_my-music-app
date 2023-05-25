@@ -33,12 +33,6 @@ function Dashboard() {
     setQuality(target.value);
   };
   
-  useEffect(() => {
-    console.log(online);
-    console.log(volume);
-    console.log(quality);
-  }, [online, volume, quality]);
-  
   const handleDirection = () => {
     setDirection(window.innerWidth > 1000 ? "row" : "column");
   };
