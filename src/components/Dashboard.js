@@ -19,7 +19,6 @@ function Dashboard() {
   const [online, setOnline] = useState(false);
   const [volume, setVolume] = useState(30);
   const [quality, setQuality] = useState(2);
-  const [notifications, setNotifications] = useState([]);
   const [direction, setDirection] = useState('');
   
   const handleSwitch = () => {
@@ -33,15 +32,7 @@ function Dashboard() {
   const handleQuality = ({ target }) => {
     setQuality(target.value);
   };
-  ///INCOMPLETE
-  useEffect(() => {
-    setNotifications(prevNotifs => {
-      if (!online) {
-        return [...prevNotifs, "Your application is offline. You won't be able to share or stream music to other devices."]
-      }
-    })
-  }, [online]);
-  ///
+  
   useEffect(() => {
     console.log(online);
     console.log(volume);
@@ -68,7 +59,7 @@ function Dashboard() {
       </Typography>
       </div>
       <Stack sx={{ marginBottom: 5 }} direction={direction} spacing={8}>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ width: 275 }}>
           <CardContent sx={{ width: '210px' }}>
             <Typography sx={{ fontWeight: 'bold' }} color="inherit" gutterBottom>
               Online Mode
@@ -81,7 +72,7 @@ function Dashboard() {
             <PinkSwitch onClick={handleSwitch} />
           </CardActions>
         </Card>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ width: 275 }}>
           <CardContent sx={{ width: '210px' }}>
             <Typography sx={{ fontWeight: 'bold' }} color="inherit" gutterBottom>
               Master Volume
@@ -103,7 +94,7 @@ function Dashboard() {
           />
           </CardActions>
         </Card>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ width: 275 }}>
           <CardContent sx={{ width: '210px' }}>
             <Typography sx={{ fontWeight: 'bold' }} color="inherit" gutterBottom>
               Sound Quality
@@ -128,15 +119,10 @@ function Dashboard() {
         System Notifications:
       </Typography>
       </div>
-      <Stack>
-        {notifications.length ? 
-          notifications.map((notif, idx) => {
-            return (
-              <Typography key={idx} variant="paragraph" gutterBottom>{notif}</Typography>
-            )
-          }) : 
-          <></>
-        }
+      <Stack >
+        {!online && <Typography variant="paragraph" gutterBottom>Your application is offline. You won't be able to share or stream music to other devices.</Typography>}
+        {volume > 80 && <Typography variant="paragraph" gutterBottom>Listening to music at a high volume could cause long-term hearing loss.</Typography>}
+        {quality === 1 && <Typography variant="paragraph" gutterBottom>Music quality is degraded. Increase quality if your connection allows it.</Typography>}
       </Stack>
     </div>
   );
